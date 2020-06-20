@@ -10,28 +10,19 @@ on:
   pull_request:
     branches: [ master ]
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   lint:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    runs-on: ubuntu-18.04
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2
-    
-    - name: Setup Python env
+    - uses: actions/checkout@v1
+    - name: Setup Python environment
       uses: actions/setup-python@v1.1.1
-    - name: install requirements
-      run: pip install -q -r requirements.txt
-    - name: Link code
+    - name: Install requirements
+      run: pip install --quiet --requirement requirements.txt
+    - name: Lint code
       run: |
-        flake8 --ignore=E501, E231 *.py
-        pylint --disable-C0301 --disable=C0326 *.py
-
-    # Runs a single command using the runners shell
+        flake8 --ignore=E501,E231 *.py
+        pylint --disable=C0301 --disable=C0326 test_app.py
     - name: Run unit tests
       run: |
         python -m unittest --verbose --failfast
