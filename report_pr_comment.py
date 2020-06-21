@@ -60,13 +60,19 @@ def update_leaderboard(score, scoreText="Score",
 
     entry = "#" + str(pr.number) + " by " + sender
 
+    lb_branch_name = "_lb_"
+
     try: # Check if the file exist
-        repo.get_contents(leaderboardFile, ref="_lb_")
+        repo.get_contents(leaderboardFile, ref=lb_branch_name)
     except: 
-        repo.create_file(leaderboardFile, "initial commit", scoreText + ", Entity", branch="_lb_")
+        sb = repo.get_branch('master')
+        # https://stackoverflow.com/questions/46120240
+        repo.create_git_ref(ref='refs/heads/' + lb_branch_name, sha=sb.commit.sha)
+        repo.create_file(leaderboardFile, 
+            "initial commit", scoreText + ", Entity", branch=lb_branch_name)
         pass
     
-    contents = repo.get_contents(leaderboardFile, ref="_lb_")
+    contents = repo.get_contents(leaderboardFile, ref=lb_branch_name)
     df = pd.read_csv(BytesIO(base64.b64decode(contents.content)))
 
     df.loc[len(df.index)] =  [score, entry] 
@@ -75,7 +81,7 @@ def update_leaderboard(score, scoreText="Score",
 
     new_leaderbord_content = df.to_csv(index=False)
     repo.update_file(leaderboardFile, "Score added", 
-        new_leaderbord_content, contents.sha, branch="_lb_")  
+        new_leaderbord_content, contents.sha, branch=lb_branch_name)  
 
     # Add new leaderboard results as a comment
     add_comment("## New Leaderboard\n" + df.to_markdown()) 
