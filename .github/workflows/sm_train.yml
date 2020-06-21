@@ -1,0 +1,25 @@
+# This is a basic workflow to help you get started with Actions
+
+name: SageMaker Train
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  sm_train:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v1
+    - name: Setup Python environment
+      uses: actions/setup-python@v1.1.1
+    - name: Install requirements
+      run: pip install --quiet --requirement requirements.txt
+    - name: Fire SageMaker train
+      run: |
+        python sm_train.py
+      

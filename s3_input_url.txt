@@ -1,0 +1,1 @@
+s3://sagemaker-us-west-2-294038372338/sagemaker/hunkim-pytorch-mnist
