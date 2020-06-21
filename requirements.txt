@@ -2,3 +2,5 @@ sagemaker
 flake8
 pylint
 pytest
+torch
+torchvision
