@@ -58,7 +58,7 @@ def update_leaderboard(score, scoreText="Score",
     prs = repo.get_pulls(state='open', sort='created', head=branch_label)
     pr = prs[0]
 
-    entry = "#" + pr.number + " by " + sender
+    entry = "#" + str(pr.number) + " by " + sender
 
     try: # Check if the file exist
         repo.get_contents(leaderboardFile)
