@@ -29,5 +29,5 @@ jobs:
       run: |
         python report_pr_comment.py
         echo $AWS_REGION
-        python sm_train.py
+        python sm_train.p
       
