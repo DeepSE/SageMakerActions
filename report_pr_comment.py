@@ -82,4 +82,5 @@ def update_leaderboard(score, scoreText="Score",
 
 if __name__ == '__main__':
     add_comment("SageMaker Running...")
+    update_leaderboard(0)
 

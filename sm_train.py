@@ -65,4 +65,5 @@ if df_len == 0:
     update_leaderboard(0, scoreText="Test Accuracy")
 else:
     value = accuracy_df.loc[df_len-1]['value']
+    print("Uploading leaderboard: " + value )
     update_leaderboard(value, scoreText="Test Accuracy")
