@@ -1,7 +1,7 @@
 import sagemaker
 import boto3
 
-sagemaker_session = sagemaker.Session()
+sagemaker_session = sagemaker.Session(boto3.session.Session())
 
 from sagemaker.pytorch import PyTorch
 
