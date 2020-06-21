@@ -130,6 +130,9 @@ def train(args):
                 logger.info('Train Epoch: {} [{}/{} ({:.0f}%)] Loss: {:.6f}'.format(
                     epoch, batch_idx * len(data), len(train_loader.sampler),
                     100. * batch_idx / len(train_loader), loss.item()))
+                logger.info("Train_epoch={:.4f};  Train_loss={:.4f};".format(
+                    epoch, loss.item()))
+                    
         test(model, test_loader, device)
     save_model(model, args.model_dir)
 
@@ -150,6 +153,9 @@ def test(model, test_loader, device):
     logger.info('Test set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
         test_loss, correct, len(test_loader.dataset),
         100. * correct / len(test_loader.dataset)))
+    logger.info("Test_loss={:.4f};  Test_accuracy={:.4f};".format(
+        test_loss, correct / len(test_loader.dataset)))
+
 
 
 def model_fn(model_dir):
