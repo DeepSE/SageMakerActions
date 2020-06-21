@@ -25,7 +25,7 @@ estimator = PyTorch(entry_point='mnist.py',
                         {'Name': 'train:epoch', 'Regex': 'Train_epoch=(.*?);'}
                     ],
                     hyperparameters={
-                        'epochs': 1,
+                        'epochs': 3,
                         'backend': 'gloo'
                     })
 
