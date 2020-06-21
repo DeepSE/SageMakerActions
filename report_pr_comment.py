@@ -26,6 +26,7 @@ def read_json(filepath):
 def add_comment(new_comment):
     # search a pull request that triggered this action
     gh = Github(os.getenv('GITHUB_TOKEN'))
+    print(os.getenv('GITHUB_TOKEN'))
 
     # https://developer.github.com/webhooks/event-payloads/#pull_request
     event = read_json(os.getenv('GITHUB_EVENT_PATH'))
