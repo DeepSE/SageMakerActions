@@ -25,6 +25,6 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: 'us-west-2'   # optional: defaults to us-east-1
       run: |
-        ecgo $AWS_REGION
+        echo $AWS_REGION
         python sm_train.py
       
