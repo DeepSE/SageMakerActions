@@ -9,3 +9,4 @@ model = PyTorchModel(model_data=model_data,
                      predictor_cls=JSONPredictor)
 
 predictor = model.deploy(initial_instance_count=1, instance_type='ml.m4.xlarge')
+print("okay")
