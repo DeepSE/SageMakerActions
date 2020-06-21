@@ -4,4 +4,4 @@ pylint
 pytest
 torch
 torchvision
-github
+PyGithub
