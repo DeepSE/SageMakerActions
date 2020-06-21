@@ -19,16 +19,13 @@ jobs:
       uses: actions/setup-python@v1.1.1
     - name: Install requirements
       run: pip install --requirement requirements.txt
-    - name: Fire SageMaker setup
+    - name: Fire SageMaker
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: 'us-west-2'   # optional: defaults to us-east-1
         AWS_DEFAULT_REGION: 'us-west-2'
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        filename: template.md
-    - name: Fire SageMaker run
       run: |
         python report_pr_comment.py
         echo $AWS_REGION

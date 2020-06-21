@@ -61,7 +61,8 @@ def report():
     pr = prs[0]
 
     # load template
-    template = load_template(get_actions_input('filename'))
+    #template = load_template(get_actions_input('filename'))
+    template = load_template('template.md')
 
     # build a comment
     pr_info = {
