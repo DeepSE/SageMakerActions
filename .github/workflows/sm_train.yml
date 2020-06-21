@@ -28,6 +28,5 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         python report_pr_comment.py
-        echo $AWS_REGION
-        python sm_train.py
-      
+        echo $GITHUB_TOKEN
+    
