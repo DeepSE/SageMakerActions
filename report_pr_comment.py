@@ -65,9 +65,13 @@ def update_leaderboard(score, scoreText="Score",
     try: # Check if the file exist
         repo.get_contents(leaderboardFile, ref=lb_branch_name)
     except: 
-        sb = repo.get_branch('master')
-        # https://stackoverflow.com/questions/46120240
-        repo.create_git_ref(ref='refs/heads/' + lb_branch_name, sha=sb.commit.sha)
+        try: # Perhaps the branch already exist
+            sb = repo.get_branch('master')
+            # https://stackoverflow.com/questions/46120240
+            repo.create_git_ref(ref='refs/heads/' + lb_branch_name, sha=sb.commit.sha)
+        except:
+            pass
+
         repo.create_file(leaderboardFile, 
             "initial commit", scoreText + ", Entity", branch=lb_branch_name)
         pass
