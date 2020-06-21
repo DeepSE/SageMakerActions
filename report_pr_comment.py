@@ -42,7 +42,7 @@ def add_comment(new_comment):
         exit(0)
 
     # add the comment
-    pr.create_issue_comment(new_comment)
+#    pr.create_issue_comment(new_comment)
 
 def update_leaderboard(score, scoreText="Score", 
         leaderboardFile = ".leaderboard.csv", ascending=True):
