@@ -51,5 +51,18 @@ md = "## Trained Model\n* " + trained_model_location + \
     "\n## Results\n"+ metrics_dataframe.to_markdown()
 print(md)
 
-from report_pr_comment import add_comment
+# Add comment
+from report_pr_comment import add_comment, update_leaderboard
 add_comment(md)
+
+# Update leaderboard
+accuracy_names = ['test:accuracy']
+accuracy_df = TrainingJobAnalytics(training_job_name=training_job_name, metric_names=accuracy_names).dataframe()
+
+df_len = len(accuracy_df.index)
+if df_len == 0:
+    print("No results to report")
+    update_leaderboard(0, scoreText="Test Accuracy")
+else:
+    value = accuracy_df.loc[df_len-1]['value']
+    update_leaderboard(value, scoreText="Test Accuracy")
