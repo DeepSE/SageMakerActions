@@ -27,7 +27,6 @@ jobs:
         AWS_DEFAULT_REGION: 'us-west-2'
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        python report_pr_comment.py
         echo $AWS_REGION
         python sm_train.py
       
