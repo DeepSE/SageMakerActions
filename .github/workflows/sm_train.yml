@@ -26,6 +26,8 @@ jobs:
         AWS_REGION: 'us-west-2'   # optional: defaults to us-east-1
         AWS_DEFAULT_REGION: 'us-west-2'
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        filename: template.md
 
       run: |
         python report_pr_comment.py
