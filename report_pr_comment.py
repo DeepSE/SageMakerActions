@@ -71,7 +71,7 @@ def update_leaderboard(score, scoreText="Score",
 
     df.loc[len(df.index)] =  [score, entry] 
 
-    df = df.sort_values(by=df.columns[0], ascending=True)
+    df = df.sort_values(by=df.columns[0], ascending=False)
 
     new_leaderbord_content = df.to_csv(index=False)
     repo.update_file(leaderboardFile, "Score added", 
