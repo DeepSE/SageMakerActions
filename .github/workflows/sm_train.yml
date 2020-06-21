@@ -19,7 +19,7 @@ jobs:
       uses: actions/setup-python@v1.1.1
     - name: Install requirements
       run: pip install --requirement requirements.txt
-    - name: Fire SageMaker train
+    - name: Fire SageMaker setup
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
