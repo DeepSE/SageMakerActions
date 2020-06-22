@@ -32,11 +32,8 @@ def update_leaderboard(score, scoreText="Score",
 
     # https://developer.github.com/webhooks/event-payloads/#pull_request
     event = read_json(os.getenv('GITHUB_EVENT_PATH'))
-    branch_label = event['pull_request']['head']['label']  # author:branch
-
     repo = gh.get_repo(event['repository']['full_name'])
-    prs = repo.get_pulls(state='open', sort='created', head=branch_label)
-    pr = prs[0]
+    pr = repo.get_pull(int(event['number']))
 
     pr_number = pr.number
     pr_sender = event['sender']['login']
