@@ -5,6 +5,8 @@ name: SageMaker Train
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
 on:
+  push:
+    branches: [ master ]
   pull_request:
     branches: [ master ]
 
@@ -14,13 +16,10 @@ jobs:
     steps:
     - name: PR checkout
     - uses: actions/checkout@v2
-
     - name: Setup Python environment
       uses: actions/setup-python@v1.1.1
-
     - name: Install requirements
       run: pip install --requirement requirements.txt
-      
     - name: Start
       uses: actions/github-script@v2
       with:
@@ -32,7 +31,6 @@ jobs:
               repo: context.repo.repo,
               body: '👋 SageMakr Train Starts!'
           })
-
     - name: Fire SageMaker
       id: sm_train
       env:
@@ -46,7 +44,6 @@ jobs:
         REPO_NAME: $${{ context.repo.repo.full_name}}
       run: |
         python report.py
-
     - name: Report Results   
       uses: actions/github-script@v2
       with:
