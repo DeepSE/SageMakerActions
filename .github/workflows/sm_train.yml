@@ -41,6 +41,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         python report.py
+        python sm_train.py
+        
     - name: Report Results   
       uses: actions/github-script@v2
       with:
