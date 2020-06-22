@@ -39,6 +39,7 @@ def update_leaderboard(score, scoreText="Score",
     pr_sender = event['sender']['login']
     entry = "#" + str(pr_number) + " by " + str(pr_sender)
 
+
     try: # Check if the file exist
         repo.get_contents(leaderboardFile, ref=lb_branch_name)
     except: 
@@ -63,6 +64,16 @@ def update_leaderboard(score, scoreText="Score",
     new_leaderbord_content = df.to_csv(index=False)
     repo.update_file(leaderboardFile, "Score added", 
         new_leaderbord_content, contents.sha, branch=lb_branch_name)  
+
+    # Get the pull #1
+    pr1 = repo.get_pull(1)
+
+    for comment in pr1.get_issue_comments():
+        if comment.body.startswith(leaderboardFile):
+            comment.delete()
+   
+    pr1.create_issue_comment(leaderboardFile + "\n" + new_leaderbord_content)
+
 
     # Add new leaderboard results as a comment
     leaderboard_md = "## New Leaderboard\n" + df.to_markdown()
