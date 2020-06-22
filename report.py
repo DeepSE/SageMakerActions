@@ -50,10 +50,9 @@ def update_leaderboard(score, scoreText="Score",
     if not leaderboard_content:
         leaderboard_content = scoreText + ", Entity"
     
-    df = pd.read_csv(StringIO(base64.b64decode(leaderboard_content)))
+    df = pd.read_csv(StringIO(leaderboard_content))
     df.loc[len(df.index)] =  [score, entry] 
     df = df.sort_values(by=df.columns[0], ascending=ascending)
-
     new_leaderbord_content = df.to_csv(index=False)
 
     pr1.create_issue_comment(leaderboard_indicator + new_leaderbord_content)
