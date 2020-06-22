@@ -71,7 +71,7 @@ def report(lb_config):
     score_metric = lb_config['score_metric']
 
     training_job_name = estimator.latest_training_job.name
-    trained_model_location = estimator.model_data
+    trained_model_location = "model_data=" + estimator.model_data
     print(trained_model_location)
     trained_model_location_base64 = base64.b64encode(trained_model_location.encode("utf-8")).decode("utf-8")
     print(f"::set-output name=MODEL_LOCATION::{trained_model_location_base64}")
@@ -80,8 +80,7 @@ def report(lb_config):
     metric_names = [ metric['Name'] for metric in estimator.metric_definitions ] 
 
     metrics_dataframe = TrainingJobAnalytics(training_job_name=training_job_name, metric_names=metric_names).dataframe()
-    result_md = "## Trained Model\n* " + trained_model_location + \
-        "\n## Results\n"+ metrics_dataframe.to_markdown()
+    result_md = "## Results\n"+ metrics_dataframe.to_markdown()
     print(result_md)
 
     result_md_base64 = base64.b64encode(result_md.encode("utf-8")).decode("utf-8")

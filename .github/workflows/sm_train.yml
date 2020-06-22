@@ -14,8 +14,10 @@ jobs:
     steps:
     - name: PR checkout
       uses: actions/checkout@v2
+
     - name: Setup Python environment
       uses: actions/setup-python@v1.1.1
+
     - name: Install requirements
       run: pip install --requirement requirements.txt
     - name: Start
@@ -36,9 +38,9 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: 'us-west-2'   # optional: defaults to us-east-1
         AWS_DEFAULT_REGION: 'us-west-2'
+        PR_NUM: ${{ github.event.number }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        python report.py
         python sm_train.py
 
     - name: Report Results   
