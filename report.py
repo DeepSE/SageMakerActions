@@ -8,18 +8,38 @@ import base64
 from io import BytesIO
 from sagemaker.analytics import TrainingJobAnalytics
 
+def read_json(filepath):
+    """
+    Read a json file as a dictionary.
+    Parameters
+    ----------
+    filepath : str
+    Returns
+    -------
+    data : dict
+    """
+    with open(filepath, 'r') as f:
+        return json.load(f)
+
+# FIXME: Where to store the leaderboard
 def update_leaderboard(score, scoreText="Score", 
         leaderboardFile = ".leaderboard.csv", 
         lb_branch_name = "_lb_",
         ascending=False):
     # search a pull request that triggered this action
     gh = Github(os.getenv('GITHUB_TOKEN'))
-    pr_number = os.getenv('PR_NUMBER')
-    pr_sender = os.getenv('PR_SENDER')
-    repo_name = os.getenv('REPO_NAME')
-    entry = "#" + str(pr_number) + " by " + str(pr_sender)
 
-    repo = gh.get_repo(repo_name)
+    # https://developer.github.com/webhooks/event-payloads/#pull_request
+    event = read_json(os.getenv('GITHUB_EVENT_PATH'))
+    branch_label = event['pull_request']['head']['label']  # author:branch
+
+    repo = gh.get_repo(event['repository']['full_name'])
+    prs = repo.get_pulls(state='open', sort='created', head=branch_label)
+    pr = prs[0]
+
+    pr_number = pr.number
+    pr_sender = event['sender']['login']
+    entry = "#" + str(pr_number) + " by " + str(pr_sender)
 
     try: # Check if the file exist
         repo.get_contents(leaderboardFile, ref=lb_branch_name)

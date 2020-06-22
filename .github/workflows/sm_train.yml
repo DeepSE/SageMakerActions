@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: PR checkout
-    - uses: actions/checkout@v2
+      uses: actions/checkout@v2
     - name: Setup Python environment
       uses: actions/setup-python@v1.1.1
     - name: Install requirements
@@ -39,9 +39,6 @@ jobs:
         AWS_REGION: 'us-west-2'   # optional: defaults to us-east-1
         AWS_DEFAULT_REGION: 'us-west-2'
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PR_NUMBER: ${{ context.issue.number }}
-        PR_SENDER: ${{ context.sender.login }}
-        REPO_NAME: $${{ context.repo.repo.full_name}}
       run: |
         python report.py
     - name: Report Results   
@@ -53,5 +50,17 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: steps.sm_train.outputs.RESULT_MD
+              body: "${{ steps.sm_train.outputs.MODEL_LOCATION}}"
+          })   
+          github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "${{ steps.sm_train.outputs.RESULT_MD}}"
+          })   
+          github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "${{ steps.sm_train.outputs.LEADERBOARD_MD}}"
           })   
