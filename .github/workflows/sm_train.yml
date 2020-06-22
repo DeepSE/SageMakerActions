@@ -45,7 +45,6 @@ jobs:
         PR_SENDER: ${{ context.sender.login }}
         REPO_NAME: $${{ context.repo.repo.full_name}}
       run: |
-        # python sm_train.py
         python report.py
 
     - name: Report Results   
