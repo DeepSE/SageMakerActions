@@ -22,10 +22,6 @@ jobs:
       run: pip install --requirement requirements.txt
     - name: Start
       uses: actions/github-script@v2
-      env:
-        PR_NUMBER: ${{ context.issue.number }}
-        PR_SENDER: ${{ context.sender.login }}
-        REPO_NAME: $${{ context.repo.repo.full_name}}
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
