@@ -27,7 +27,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '👋 SageMakr Train Starts!'
+              body: '🤞SageMaker Train Starts!'
           })
     - name: Fire SageMaker
       id: sm_train

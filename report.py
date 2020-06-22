@@ -21,6 +21,7 @@ def read_json(filepath):
     with open(filepath, 'r') as f:
         return json.load(f)
 
+
 # FIXME: Where to store the leaderboard
 def update_leaderboard(score, scoreText="Score", 
         leaderboardFile = ".leaderboard.csv", 
@@ -68,7 +69,8 @@ def update_leaderboard(score, scoreText="Score",
 
     # Add new leaderboard results as a comment
     leaderboard_md = "## New Leaderboard\n" + df.to_markdown()
-    print(f"::set-output name=LEADERBOARD_MD::{leaderboard_md}")
+    leaderboard_md_base64 = base64.b64encode(leaderboard_md)
+    print(f"::set-output name=LEADERBOARD_MD::{leaderboard_md_base64}")
 
 def report(lb_config):
     ########################################################################
@@ -81,7 +83,8 @@ def report(lb_config):
     training_job_name = estimator.latest_training_job.name
     trained_model_location = estimator.model_data
     print(trained_model_location)
-    print(f"::set-output name=MODEL_LOCATION::{trained_model_location}")
+    trained_model_location_base64 = base64.b64encode(trained_model_location)
+    print(f"::set-output name=MODEL_LOCATION::{trained_model_location_base64}")
     
     # Get metric values
     metric_names = [ metric['Name'] for metric in estimator.metric_definitions ] 
@@ -90,8 +93,9 @@ def report(lb_config):
     result_md = "## Trained Model\n* " + trained_model_location + \
         "\n## Results\n"+ metrics_dataframe.to_markdown()
     print(result_md)
-
-    print(f"::set-output name=RESULT_MD::{result_md}")
+    
+    result_md_base64 = base64.b64encode(result_md)
+    print(f"::set-output name=RESULT_MD::{result_md_base64}")
 
     # Update leaderboard. Make sure the key name is right
     # Use any name if you don't want to use the leaderboard
