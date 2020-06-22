@@ -22,6 +22,10 @@ jobs:
       run: pip install --requirement requirements.txt
     - name: Start
       uses: actions/github-script@v2
+      env:
+        PR_NUMBER: ${{ context.issue.number }}
+        PR_SENDER: ${{ context.sender.login }}
+        REPO_NAME: $${{ context.repo.repo.full_name}}
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
@@ -39,9 +43,6 @@ jobs:
         AWS_REGION: 'us-west-2'   # optional: defaults to us-east-1
         AWS_DEFAULT_REGION: 'us-west-2'
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PR_NUMBER: ${{ context.issue.number }}
-        PR_SENDER: ${{ context.sender.login }}
-        REPO_NAME: $${{ context.repo.repo.full_name}}
       run: |
         python report.py
     - name: Report Results   
