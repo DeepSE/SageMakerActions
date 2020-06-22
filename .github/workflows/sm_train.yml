@@ -46,21 +46,25 @@ jobs:
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
+          model_str = Buffer.from("${{ steps.sm_train.outputs.MODEL_LOCATION}}", 'base64').toString()
           github.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: btoa("${{ steps.sm_train.outputs.MODEL_LOCATION}}")
+              body: model_str
+          }) 
+          
+          result_str = Buffer.from("${{ steps.sm_train.outputs.RESULT_MD}}", 'base64').toString()
+          github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: result_str
           })   
+          lb_str = Buffer.from("${{ steps.sm_train.outputs.LEADERBOARD_MD}}", 'base64').toString()
           github.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: btoa("${{ steps.sm_train.outputs.RESULT_MD}}")
-          })   
-          github.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: btoa("${{ steps.sm_train.outputs.LEADERBOARD_MD}}")
+              body: lb_str
           })   
