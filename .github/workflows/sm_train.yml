@@ -38,7 +38,7 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: 'us-west-2'   # optional: defaults to us-east-1
         AWS_DEFAULT_REGION: 'us-west-2'
-        PR_NUM: ${{ github.event.number }}
+        PR_NUMBER: ${{ github.event.number }} # Only available for pr (no push)
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         python sm_train.py

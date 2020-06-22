@@ -29,11 +29,18 @@ def update_leaderboard(score, scoreText="Score",
         ascending=False):
     # search a pull request that triggered this action
     gh = Github(os.getenv('GITHUB_TOKEN'))
+    
 
     # https://developer.github.com/webhooks/event-payloads/#pull_request
     event = read_json(os.getenv('GITHUB_EVENT_PATH'))
     repo = gh.get_repo(event['repository']['full_name'])
     pr = repo.get_pull(int(event['number']))
+
+    # Testing
+    repos_name = os.getenv('GITHUB_REPOSITORY')
+    pr_number = os.getenv('PR_NUMBER')
+    pr.create_issue_comment(repos_name + ":" + pr_number)
+
 
     pr_number = pr.number
     pr_sender = event['sender']['login']
