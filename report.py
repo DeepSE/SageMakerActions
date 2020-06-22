@@ -1,0 +1,105 @@
+# Original code from 
+# https://github.com/harupy/comment-on-pr/blob/master/entrypoint.py
+from github import Github
+import os
+import json
+import pandas as pd
+import base64
+from io import BytesIO
+from sagemaker.analytics import TrainingJobAnalytics
+
+def update_leaderboard(score, scoreText="Score", 
+        leaderboardFile = ".leaderboard.csv", 
+        lb_branch_name = "_lb_",
+        ascending=False):
+    # search a pull request that triggered this action
+    gh = Github(os.getenv('GITHUB_TOKEN'))
+    pr_number = os.getenv('PR_NUMBER')
+    pr_sender = os.getenv('PR_SENDER')
+    repo_name = os.getenv('REPO_NAME')
+    entry = "#" + str(pr_number) + " by " + str(pr_sender)
+
+    repo = gh.get_repo(repo_name)
+
+    try: # Check if the file exist
+        repo.get_contents(leaderboardFile, ref=lb_branch_name)
+    except: 
+        try: # Perhaps the branch already exist
+            sb = repo.get_branch('master')
+            # https://stackoverflow.com/questions/46120240
+            repo.create_git_ref(ref='refs/heads/' + lb_branch_name, sha=sb.commit.sha)
+        except:
+            pass
+
+        repo.create_file(leaderboardFile, 
+            "initial commit", scoreText + ", Entity", branch=lb_branch_name)
+        pass
+    
+    contents = repo.get_contents(leaderboardFile, ref=lb_branch_name)
+    df = pd.read_csv(BytesIO(base64.b64decode(contents.content)))
+
+    df.loc[len(df.index)] =  [score, entry] 
+
+    df = df.sort_values(by=df.columns[0], ascending=ascending)
+
+    new_leaderbord_content = df.to_csv(index=False)
+    repo.update_file(leaderboardFile, "Score added", 
+        new_leaderbord_content, contents.sha, branch=lb_branch_name)  
+
+    # Add new leaderboard results as a comment
+    leaderboard_md = "## New Leaderboard\n" + df.to_markdown()
+    print(f"::set-output name=LEADERBOARD_MD::{leaderboard_md}")
+
+def report(lb_config):
+    ########################################################################
+    # DONOT EDIT AFTER THIS LINE
+    ########################################################################
+    estimator = lb_config['estimator']
+    score_name = lb_config['score_name']
+    score_metric = lb_config['score_metric']
+
+    training_job_name = estimator.latest_training_job.name
+    trained_model_location = estimator.model_data
+    print(trained_model_location)
+    print(f"::set-output name=MODEL_LOCATION::{trained_model_location}")
+    
+    # Get metric values
+    metric_names = [ metric['Name'] for metric in estimator.metric_definitions ] 
+
+    metrics_dataframe = TrainingJobAnalytics(training_job_name=training_job_name, metric_names=metric_names).dataframe()
+    result_md = "## Trained Model\n* " + trained_model_location + \
+        "\n## Results\n"+ metrics_dataframe.to_markdown()
+    print(result_md)
+
+    print(f"::set-output name=RESULT_MD::{result_md}")
+
+    # Update leaderboard. Make sure the key name is right
+    # Use any name if you don't want to use the leaderboard
+    if score_metric not in metric_names:
+        print("leaderboard key name is not correct. No leaderboard support.")
+        exit(-1)
+
+    accuracy_df = TrainingJobAnalytics(
+        training_job_name=training_job_name, metric_names=[score_metric]).dataframe()
+
+    df_len = len(accuracy_df.index)
+    if df_len == 0:
+        print("No results to report")
+        update_leaderboard(0, scoreText=score_name, ascending=False)
+    else:
+        value = accuracy_df.loc[df_len-1]['value']
+        print("Uploading leaderboard: " + str(value) )
+        update_leaderboard(value, scoreText=score_name)
+
+
+if __name__ == '__main__':
+    result_md = "Testing!"
+    print(f"::set-output name=RESULT_MD::{result_md}")
+
+    leaderboard_md = "## New Leaderboard\n"
+    print(f"::set-output name=LEADERBOARD_MD::{leaderboard_md}")
+
+    trained_model_location="test.gz"
+    print(f"::set-output name=MODEL_LOCATION::{trained_model_location}")
+
+

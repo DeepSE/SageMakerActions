@@ -1,6 +1,5 @@
 import sagemaker
 import boto3
-from sagemaker.analytics import TrainingJobAnalytics
 from sagemaker.pytorch import PyTorch
 
 sagemaker_session = sagemaker.Session(boto3.session.Session())
@@ -19,6 +18,7 @@ metric_definitions=[
                         {'Name': 'train:epoch', 'Regex': 'Train_epoch=(.*?);'}
                     ]
 
+
 estimator = PyTorch(entry_point='mnist.py',
                     source_dir='code',
                     role=role,
@@ -33,46 +33,14 @@ estimator = PyTorch(entry_point='mnist.py',
 
 estimator.fit({'training': inputs})
 
+leaderboard_config = {
+    'score_metric': 'test:accuracy', 
+    'score_name': 'Test Accuracy',
+    'ascending': False,
+    'estimator': estimator
+    }
 
-########################################################################
-# DONOT EDIT AFTER THIS LINE
-########################################################################
-training_job_name = estimator.latest_training_job.name
-desc = sagemaker_session.sagemaker_client.describe_training_job(TrainingJobName=training_job_name)
-trained_model_location = desc['ModelArtifacts']['S3ModelArtifacts']
-print(trained_model_location)
-
-import pprint
-pp = pprint.PrettyPrinter(indent=4)
-pp.pprint(desc)
-
-# Get metric values
-metric_names = [ metric['Name'] for metric in metric_definitions ] 
-
-metrics_dataframe = TrainingJobAnalytics(training_job_name=training_job_name, metric_names=metric_names).dataframe()
-md = "## Trained Model\n* " + trained_model_location + \
-     "\n## Results\n"+ metrics_dataframe.to_markdown()
-print(md)
-
-# Add comment
-from report_pr_comment import add_comment, update_leaderboard
-add_comment(md)
-
-# Update leaderboard. Make sure the key name is right
-# Use any name if you don't want to use the leaderboard
-accuracy_name = 'test:accuracy'
-if accuracy_name not in metric_names:
-    print("leaderboard key name is not correct. No leaderboard support.")
-    exit(-1)
-
-accuracy_df = TrainingJobAnalytics(
-    training_job_name=training_job_name, metric_names=[accuracy_name]).dataframe()
-
-df_len = len(accuracy_df.index)
-if df_len == 0:
-    print("No results to report")
-    update_leaderboard(0, scoreText="Test Accuracy")
-else:
-    value = accuracy_df.loc[df_len-1]['value']
-    print("Uploading leaderboard: " + str(value) )
-    update_leaderboard(value, scoreText="Test Accuracy")
+# Report results 
+# DONOT REMOVE
+from report import report
+report(leaderboard_config)

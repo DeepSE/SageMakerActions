@@ -5,29 +5,56 @@ name: SageMaker Train
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
 on:
-  push:
-    branches: [ master ]
   pull_request:
     branches: [ master ]
 
 jobs:
   sm_train:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - name: PR checkout
+    - uses: actions/checkout@v2
+
     - name: Setup Python environment
       uses: actions/setup-python@v1.1.1
+
     - name: Install requirements
       run: pip install --requirement requirements.txt
+
+     - uses: actions/github-script@v2
+      with:
+        github-token: ${{secrets.GITHUB_TOKEN}}
+        script: |
+          github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '👋 SageMakr Train Starts!'
+          })
+
     - name: Fire SageMaker
+      id: sm_train
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: 'us-west-2'   # optional: defaults to us-east-1
         AWS_DEFAULT_REGION: 'us-west-2'
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PR_NUMBER: ${{ context.issue.number }}
+        PR_SENDER: ${{ context.sender.login }}
+        REPO_NAME: $${{ context.repo.repo.full_name}}
       run: |
-        python report_pr_comment.py
-        echo $AWS_REGION
-        python sm_train.py
-      
+        # python sm_train.py
+        python report.py
+
+    - name: Report Results   
+      uses: actions/github-script@v2
+      with:
+        github-token: ${{secrets.GITHUB_TOKEN}}
+        script: |
+          github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: steps.sm_train.outputs.RESULT_MD
+          })   
