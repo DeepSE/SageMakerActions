@@ -20,8 +20,9 @@ jobs:
 
     - name: Install requirements
       run: pip install --requirement requirements.txt
-
-     - uses: actions/github-script@v2
+      
+    - name: Start
+      uses: actions/github-script@v2
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
