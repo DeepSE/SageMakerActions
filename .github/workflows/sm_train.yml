@@ -50,17 +50,17 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: "${{ steps.sm_train.outputs.MODEL_LOCATION}}"
+              body: btoa("${{ steps.sm_train.outputs.MODEL_LOCATION}}")
           })   
           github.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: "${{ steps.sm_train.outputs.RESULT_MD}}"
+              body: btoa("${{ steps.sm_train.outputs.RESULT_MD}}")
           })   
           github.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: "${{ steps.sm_train.outputs.LEADERBOARD_MD}}"
+              body: btoa("${{ steps.sm_train.outputs.LEADERBOARD_MD}}")
           })   

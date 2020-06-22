@@ -69,7 +69,7 @@ def update_leaderboard(score, scoreText="Score",
 
     # Add new leaderboard results as a comment
     leaderboard_md = "## New Leaderboard\n" + df.to_markdown()
-    leaderboard_md_base64 = base64.b64encode(leaderboard_md)
+    leaderboard_md_base64 = base64.b64encode(leaderboard_md.encode("utf-8"))
     print(f"::set-output name=LEADERBOARD_MD::{leaderboard_md_base64}")
 
 def report(lb_config):
@@ -83,7 +83,7 @@ def report(lb_config):
     training_job_name = estimator.latest_training_job.name
     trained_model_location = estimator.model_data
     print(trained_model_location)
-    trained_model_location_base64 = base64.b64encode(trained_model_location)
+    trained_model_location_base64 = base64.b64encode(trained_model_location.encode("utf-8"))
     print(f"::set-output name=MODEL_LOCATION::{trained_model_location_base64}")
     
     # Get metric values
@@ -93,8 +93,8 @@ def report(lb_config):
     result_md = "## Trained Model\n* " + trained_model_location + \
         "\n## Results\n"+ metrics_dataframe.to_markdown()
     print(result_md)
-    
-    result_md_base64 = base64.b64encode(result_md)
+
+    result_md_base64 = base64.b64encode(result_md.encode("utf-8"))
     print(f"::set-output name=RESULT_MD::{result_md_base64}")
 
     # Update leaderboard. Make sure the key name is right
