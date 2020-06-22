@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: PR checkout
-    - uses: actions/checkout@v2
+      uses: actions/checkout@v2
     - name: Setup Python environment
       uses: actions/setup-python@v1.1.1
     - name: Install requirements
