@@ -5,7 +5,7 @@ import os
 import json
 import pandas as pd
 import base64
-from io import BytesIO
+from io import BytesIO, StringIO
 from sagemaker.analytics import TrainingJobAnalytics
 
 def read_json(filepath):
@@ -24,7 +24,7 @@ def read_json(filepath):
 
 # FIXME: Where to store the leaderboard
 def update_leaderboard(score, scoreText="Score", 
-        leaderboardFile = ".leaderboard.csv", 
+        leaderboard_indicator = ".leaderboard.csv\n", 
         lb_branch_name = "_lb_",
         ascending=False):
     # search a pull request that triggered this action
@@ -38,42 +38,25 @@ def update_leaderboard(score, scoreText="Score",
     pr_number = pr.number
     pr_sender = event['sender']['login']
     entry = "#" + str(pr_number) + " by " + str(pr_sender)
-
-
-    try: # Check if the file exist
-        repo.get_contents(leaderboardFile, ref=lb_branch_name)
-    except: 
-        try: # Perhaps the branch already exist
-            sb = repo.get_branch('master')
-            # https://stackoverflow.com/questions/46120240
-            repo.create_git_ref(ref='refs/heads/' + lb_branch_name, sha=sb.commit.sha)
-        except:
-            pass
-
-        repo.create_file(leaderboardFile, 
-            "initial commit", scoreText + ", Entity", branch=lb_branch_name)
-        pass
+ 
+    leaderboard_content = None
+    pr1 = repo.get_pull(1)
+    for comment in pr1.get_issue_comments():
+        if comment.body.startswith(leaderboard_indicator):
+            if len(comment.body)>len(leaderboard_indicator):
+                leaderboard_content = comment.body[len(leaderboard_indicator):]
+            comment.delete()
     
-    contents = repo.get_contents(leaderboardFile, ref=lb_branch_name)
-    df = pd.read_csv(BytesIO(base64.b64decode(contents.content)))
-
+    if not leaderboard_content:
+        leaderboard_content = scoreText + ", Entity"
+    
+    df = pd.read_csv(StringIO(base64.b64decode(leaderboard_content)))
     df.loc[len(df.index)] =  [score, entry] 
-
     df = df.sort_values(by=df.columns[0], ascending=ascending)
 
     new_leaderbord_content = df.to_csv(index=False)
-    repo.update_file(leaderboardFile, "Score added", 
-        new_leaderbord_content, contents.sha, branch=lb_branch_name)  
 
-    # Get the pull #1
-    pr1 = repo.get_pull(1)
-
-    for comment in pr1.get_issue_comments():
-        if comment.body.startswith(leaderboardFile):
-            comment.delete()
-   
-    pr1.create_issue_comment(leaderboardFile + "\n" + new_leaderbord_content)
-
+    pr1.create_issue_comment(leaderboard_indicator + new_leaderbord_content)
 
     # Add new leaderboard results as a comment
     leaderboard_md = "## New Leaderboard\n" + df.to_markdown()
