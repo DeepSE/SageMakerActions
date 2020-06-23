@@ -8,13 +8,13 @@ jobs:
 
     steps:
     - name: Run a one-line script
+      env:
+        PR_NUMBER: ${{ github.event.issue.number }} # Only available for pr (no push)
       run: |
-        echo $GITHUB_REF
-        echo $GITHUB_ACTOR
-        echo $GITHUB_SHA
+        echo $PR_NUMBER
         cat $GITHUB_EVENT_PATH
         jq --raw-output .issue.number "$GITHUB_EVENT_PATH"
-        echo "::set-env name=PR_NUMBER::$(jq --raw-output .issue.number "$GITHUB_EVENT_PATH")"
+        echo "::set-env name=PR_NUMBER2::$(jq --raw-output .issue.number "$GITHUB_EVENT_PATH")"
 
 
     - name: PR checkout
@@ -29,7 +29,7 @@ jobs:
     - name: Comment Test
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        #PR_NUMBER: ${{ github.event.pull_request.number }} # Only available for pr (no push)
+        PR_NUMBER: ${{ github.event.issue.number }} # Only available for pr (no push)
 
       run: |
         python comment.py
