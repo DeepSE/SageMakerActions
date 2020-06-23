@@ -6,7 +6,6 @@ jobs:
     if: github.event.issue.pull_request != null &&  contains(github.event.comment.body, '/sm_deploy') && (github.actor == 'hunkim' || github.actor == 'ygg')
     runs-on: ubuntu-latest
     steps:
-       steps:
     - name: PR checkout
       uses: actions/checkout@v2
 
