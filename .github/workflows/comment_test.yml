@@ -13,7 +13,8 @@ jobs:
         echo $GITHUB_ACTOR
         echo $GITHUB_SHA
         cat $GITHUB_EVENT_PATH
-        echo "::set-env name=PR_NUMBER::$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")"
+        jq --raw-output .issue.number "$GITHUB_EVENT_PATH"
+        echo "::set-env name=PR_NUMBER::$(jq --raw-output .issue.number "$GITHUB_EVENT_PATH")"
 
 
     - name: PR checkout
