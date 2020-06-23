@@ -1,5 +1,6 @@
 # SageMakerActions
 ## Quick demo
+* https://github.com/DeepSE/SageMakerActions/pull/66
 * https://youtu.be/SjqPeL4QJao (Korean)
 * English version TBA
 
