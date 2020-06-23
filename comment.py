@@ -12,8 +12,7 @@ def add_comment(message):
     # search a pull request that triggered this action
     gh = Github(os.getenv('GITHUB_TOKEN'))
     repos_name = os.getenv('GITHUB_REPOSITORY')
-    #pr_number = os.getenv('PR_NUMBER')
-    pr_number = os.getenv('GITHUB_EVENT_NUMBER')
+    pr_number = os.getenv('PR_NUMBER')
 
     print("name", repos_name)
     print("number", pr_number)
