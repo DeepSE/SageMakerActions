@@ -17,18 +17,23 @@ class Comment:
 
         # PR_NUMBER: ${{ github.event.number }} # Only available for pr (no push)
         pr_number = pr_number or os.getenv('PR_NUMBER') or "-1"
+
+        if pr_number == -1:
+            print("No pr number")
+            return
+
         pr_number = int(pr_number)
 
         self.pr = self.repo.get_pull(pr_number)
 
     def add_comment(self, message):
-        if self.repo is None:
+        if self.pr is None:
             return
         
         self.pr.create_issue_comment(message)
 
     def get_comment(self, key):
-        if self.repo is None:
+        if self.pr is None:
             return None
 
         values = []
@@ -41,7 +46,7 @@ class Comment:
         return values
     
     def update_comment(self, key, value):
-        if self.repo is None:
+        if self.pr is None:
             return None
 
         count = 0
@@ -53,7 +58,7 @@ class Comment:
         return count
 
     def del_comment(self, key):
-        if self.repo is None:
+        if self.pr is None:
             return None
 
         count = 0
@@ -71,7 +76,5 @@ if __name__ == '__main__':
     comment.add_comment("hi there")
     values = comment.get_comment('model_data=')
     comment.add_comment('\n'.join(values))
-
-
 
 

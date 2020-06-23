@@ -3,7 +3,7 @@ on: [issue_comment]
 
 jobs:
   comment:
-    if: github.event.issue.pull_request != null &&  contains(github.event.comment.body, '/test') #&& (github.actor == 'hunkim' || github.actor == 'ygg')
+    if: github.event.issue.pull_request != null &&  contains(github.event.comment.body, '/test') && (github.actor == 'hunkim' || github.actor == 'ygg')
     runs-on: ubuntu-latest
 
     steps:
