@@ -34,7 +34,7 @@ estimator = PyTorch(entry_point='mnist.py',
                     })
 
 estimator.fit({'training': inputs})
-
+ 
 ########################################################################
 # DONOT EDIT AFTER THIS LINE
 ########################################################################
