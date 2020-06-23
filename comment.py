@@ -15,6 +15,9 @@ def add_comment(message):
     #pr_number = os.getenv('PR_NUMBER')
     pr_number = os.getenv('GITHUB_EVENT_NUMBER')
 
+    print("name", repos_name)
+    print("number", pr_number)
+
     repo = gh.get_repo(repos_name)
     pr = repo.get_pull(pr_number)
     
