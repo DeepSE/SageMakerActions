@@ -12,7 +12,8 @@ jobs:
         echo $GITHUB_REF
         echo $GITHUB_ACTOR
         echo $GITHUB_SHA
-        
+        echo "::set-env name=PR_NUMBER::$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")"
+
 
     - name: PR checkout
       uses: actions/checkout@v2
@@ -26,7 +27,7 @@ jobs:
     - name: Comment Test
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PR_NUMBER: ${{ github.event.pull_request.number }} # Only available for pr (no push)
+        #PR_NUMBER: ${{ github.event.pull_request.number }} # Only available for pr (no push)
 
       run: |
         python comment.py
