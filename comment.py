@@ -18,7 +18,7 @@ def add_comment(message):
     print("number", pr_number)
 
     repo = gh.get_repo(repos_name)
-    pr = repo.get_pull(pr_number)
+    pr = repo.get_pull(int(pr_number))
     
     pr.create_issue_comment(repos_name + ":" + pr_number + message)
 
