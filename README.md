@@ -1,5 +1,2 @@
 # SageMakerActions
-sagemaker
-pylint
-pytest
-flake8
+TBA
