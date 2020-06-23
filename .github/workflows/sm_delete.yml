@@ -1,9 +1,9 @@
-name: SageMaker Deploy
+name: SageMaker Delete
 on: [issue_comment]
 
 jobs:
-  sm_deploy:
-    if: github.event.issue.pull_request != null &&  contains(github.event.comment.body, '/deploy') && (github.actor == 'hunkim' || github.actor == 'ygg')
+  sm_delete:
+    if: github.event.issue.pull_request != null &&  contains(github.event.comment.body, '/delete') && (github.actor == 'hunkim' || github.actor == 'ygg')
     runs-on: ubuntu-latest
     steps:
     - name: PR checkout
@@ -15,7 +15,7 @@ jobs:
     - name: Install requirements
       run: pip install --requirement requirements.txt
 
-    - name: Deploy
+    - name: Delete
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -24,4 +24,4 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         PR_NUMBER: ${{ github.event.issue.number }} # Only available on issue_comment
       run: |
-        python sm_deploy.py
+        python sm_delete.py
