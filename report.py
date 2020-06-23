@@ -31,8 +31,8 @@ class ResultReport():
         comment_pr1 = Comment(pr_number=1)
         values = comment_pr1.get_comment(leaderboard_indicator)
 
-        if comment_pr1 is None or len(values) is 0:
-                    leaderboard_content = scoreText + ", Entity"
+        if comment_pr1 is None or len(values) == 0:
+            leaderboard_content = scoreText + ", Entity"
         else:
             leaderboard_content = values[0]
 
