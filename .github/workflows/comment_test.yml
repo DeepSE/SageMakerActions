@@ -18,5 +18,7 @@ jobs:
     - name: Comment Test
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PR_NUMBER: ${{ github.event.number }} # Only available for pr (no push)
+
       run: |
         python comment.py
