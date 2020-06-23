@@ -24,7 +24,7 @@ model = PyTorchModel(model_data=values[-1],
                      source_dir='code')
 
 
-comment.add_comment('Deploying ...')
+comment.add_comment('Deploying with data ' + values[-1])
 try:
     predictor = model.deploy(initial_instance_count=1, instance_type='ml.m4.xlarge')
     comment.add_comment('end_point=' + predictor.endpoint)
