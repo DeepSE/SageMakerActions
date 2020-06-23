@@ -6,7 +6,6 @@ jobs:
     if: github.event.issue.pull_request != null &&  contains(github.event.comment.body, '/test') && (github.actor == 'hunkim' || github.actor == 'ygg')
     runs-on: ubuntu-latest
     steps:
-       steps:
     - name: PR checkout
       uses: actions/checkout@v2
 
@@ -16,8 +15,7 @@ jobs:
     - name: Install requirements
       run: pip install --requirement requirements.txt
 
-    - name: Deploy
-      id: sm_deploy
+    - name: Comment Test
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
