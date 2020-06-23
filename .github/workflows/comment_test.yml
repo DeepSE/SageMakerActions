@@ -8,7 +8,7 @@ jobs:
 
     steps:
     - name: Run a one-line script
-      run: echo "${{github.event.number}}"
+      run: echo "${{github.event.pull_request.number}}"
 
     - name: PR checkout
       uses: actions/checkout@v2
@@ -22,7 +22,7 @@ jobs:
     - name: Comment Test
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PR_NUMBER: ${{ github.event.number }} # Only available for pr (no push)
+        PR_NUMBER: ${{ github.event.pull_request.number }} # Only available for pr (no push)
 
       run: |
         python comment.py
