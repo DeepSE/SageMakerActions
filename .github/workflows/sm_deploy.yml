@@ -3,7 +3,7 @@ on: [issue_comment]
 
 jobs:
   sm_deploy:
-    if: github.event.issue.pull_request != null &&  contains(github.event.comment.body, '/sm_deploy') && (github.actor == 'hunkim' || github.actor == 'ygg')
+    if: github.event.issue.pull_request != null &&  contains(github.event.comment.body, '/deploy') && (github.actor == 'hunkim' || github.actor == 'ygg')
     runs-on: ubuntu-latest
     steps:
     - name: PR checkout
@@ -23,30 +23,6 @@ jobs:
         AWS_REGION: 'us-west-2'   # optional: defaults to us-east-1
         AWS_DEFAULT_REGION: 'us-west-2'
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PR_NUMBER: ${{ github.event.issue.number }} # Only available issue_comment
       run: |
         python sm_deploy.py
-
-  sm_delete:
-    if: github.event.issue.pull_request != null &&  contains(github.event.comment.body, '/sm_delete') && (github.actor == 'hunkim' || github.actor == 'ygg')
-    runs-on: ubuntu-latest
-    steps:
-       steps:
-    - name: PR checkout
-      uses: actions/checkout@v2
-
-    - name: Setup Python environment
-      uses: actions/setup-python@v1.1.1
-      
-    - name: Install requirements
-      run: pip install --requirement requirements.txt
-
-    - name: Deploy
-      id: sm_deploy
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: 'us-west-2'   # optional: defaults to us-east-1
-        AWS_DEFAULT_REGION: 'us-west-2'
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        python sm_delete.py        
