@@ -17,13 +17,13 @@ class Comment:
 
         # PR_NUMBER: ${{ github.event.number }} # Only available for pr (no push)
         pr_number = pr_number or os.getenv('PR_NUMBER') or "-1"
+        pr_number = int(pr_number)
 
         if pr_number == -1:
             print("No pr number")
             return
 
         print("PR_NUMBER", pr_number)
-        pr_number = int(pr_number)
         self.pr = self.repo.get_pull(pr_number)
 
     def add_comment(self, message):
