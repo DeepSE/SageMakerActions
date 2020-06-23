@@ -11,6 +11,7 @@ jobs:
       run: |
         echo $GITHUB_REF
         echo $GITHUB_ACTOR
+        echo $GITHUB_SHA
         
 
     - name: PR checkout
