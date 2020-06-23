@@ -14,11 +14,16 @@ def add_comment(message):
     repos_name = os.getenv('GITHUB_REPOSITORY')
     pr_number = os.getenv('PR_NUMBER')
 
+    if pr_number is None or repos_name is None:
+        exit(-1)
+    
+    pr_number = int(pr_number)
+
     print("name", repos_name)
     print("number", pr_number)
 
     repo = gh.get_repo(repos_name)
-    pr = repo.get_pull(int(pr_number))
+    pr = repo.get_pull(pr_number)
     
     pr.create_issue_comment(repos_name + ":" + pr_number + message)
 
