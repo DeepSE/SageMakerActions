@@ -14,21 +14,13 @@ jobs:
     steps:
     - name: PR checkout
       uses: actions/checkout@v2
+
     - name: Setup Python environment
       uses: actions/setup-python@v1.1.1
+
     - name: Install requirements
       run: pip install --requirement requirements.txt
-    - name: Start
-      uses: actions/github-script@v2
-      with:
-        github-token: ${{secrets.GITHUB_TOKEN}}
-        script: |
-          github.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '🤞SageMaker Train Starts!'
-          })
+    
     - name: Fire SageMaker
       id: sm_train
       env:
@@ -36,35 +28,9 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: 'us-west-2'   # optional: defaults to us-east-1
         AWS_DEFAULT_REGION: 'us-west-2'
+        PR_NUMBER: ${{ github.event.number }} # Only available for pr (no push)
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        python report.py
         python sm_train.py
 
-    - name: Report Results   
-      uses: actions/github-script@v2
-      with:
-        github-token: ${{secrets.GITHUB_TOKEN}}
-        script: |
-          model_str = Buffer.from("${{ steps.sm_train.outputs.MODEL_LOCATION}}", 'base64').toString('binary')
-          github.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: model_str
-          }) 
-          
-          result_str = Buffer.from("${{ steps.sm_train.outputs.RESULT_MD}}", 'base64').toString('binary')
-          github.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: result_str
-          })   
-          lb_str = Buffer.from("${{ steps.sm_train.outputs.LEADERBOARD_MD}}", 'base64').toString('binary')
-          github.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: lb_str
-          })   
+    

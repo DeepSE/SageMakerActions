@@ -1,6 +1,8 @@
 import sagemaker
 import boto3
 from sagemaker.pytorch import PyTorch
+from sagemaker.analytics import TrainingJobAnalytics
+from report import ResultReport
 
 sagemaker_session = sagemaker.Session(boto3.session.Session())
 
@@ -33,14 +35,37 @@ estimator = PyTorch(entry_point='mnist.py',
 
 estimator.fit({'training': inputs})
 
-leaderboard_config = {
-    'score_metric': 'test:accuracy', 
-    'score_name': 'Test Accuracy',
-    'ascending': False,
-    'estimator': estimator
-    }
+########################################################################
+# DONOT EDIT AFTER THIS LINE
+########################################################################
+training_job_name = estimator.latest_training_job.name
+    
+# Get metric values
+metric_names = [ metric['Name'] for metric in estimator.metric_definitions ] 
+metrics_dataframe = TrainingJobAnalytics(training_job_name=training_job_name, metric_names=metric_names).dataframe()
 
-# Report results 
-# DONOT REMOVE
-from report import report
-report(leaderboard_config)
+# Report results
+rr = ResultReport()
+rr.report(estimator.model_data, metrics_dataframe)
+    
+# Update leaderboard. Make sure the key name is right
+# Use any name if you don't want to use the leaderboard
+score_metric = 'test:accuracy'
+score_name = 'Test Accuracy'
+leaderboard_ascending = False
+
+if score_metric not in metric_names:
+    print("leaderboard key name is not correct. No leaderboard support.")
+    exit(-1)
+
+accuracy_df = TrainingJobAnalytics(
+    training_job_name=training_job_name, metric_names=[score_metric]).dataframe()
+
+df_len = len(accuracy_df.index)
+if df_len == 0:
+    score = 0
+else:  # Use the last value as the new score
+    score = accuracy_df.loc[df_len-1]['value']
+
+# Update new score to the leaderboard
+rr.update_leaderboard(score, scoreText=score_name)

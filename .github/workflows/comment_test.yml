@@ -1,0 +1,24 @@
+name: Comment Test
+on: [issue_comment]
+
+jobs:
+  comment:
+    if: github.event.issue.pull_request != null &&  contains(github.event.comment.body, '/test') && (github.actor == 'hunkim' || github.actor == 'ygg')
+    runs-on: ubuntu-latest
+    steps:
+    - name: PR checkout
+      uses: actions/checkout@v2
+
+    - name: Setup Python environment
+      uses: actions/setup-python@v1.1.1
+      
+    - name: Install requirements
+      run: pip install --requirement requirements.txt
+
+    - name: Comment Test
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PR_NUMBER: ${{ github.event.number }} # Only available for pr (no push)
+
+      run: |
+        python comment.py
