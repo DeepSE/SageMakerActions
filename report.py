@@ -32,7 +32,7 @@ def update_leaderboard(score, scoreText="Score",
     comment = Comment()
 
     pr_number = comment.pr.number 
-    pr_sender = comment.pr.user.username 
+    pr_sender = comment.pr.user.login 
 
     entry = "#" + str(pr_number) + " by " + str(pr_sender)
  
