@@ -15,6 +15,7 @@ if values is None or len(values) == 0:
     comment.add_comment('Deploy Fail: no model data. Did you train?')
     exit(-1)
 
+print("Data:", values[-1])
 
 model = PyTorchModel(model_data=values[-1],
                      role=role,
