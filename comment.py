@@ -36,6 +36,7 @@ def get_comment_content(key):
     if pr_number is None or repos_name is None:
         return None
     
+    pr_number = int(pr_number)
     repo = gh.get_repo(repos_name)
     pr = repo.get_pull(pr_number)
 
