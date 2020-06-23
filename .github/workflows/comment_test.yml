@@ -8,7 +8,10 @@ jobs:
 
     steps:
     - name: Run a one-line script
-      run: echo "${{github.event.pull_request.number}}"
+      run: |
+        echo "${{github.event.pull_request.number}}"
+        echo "${{github.event.pull_request}}"
+        
 
     - name: PR checkout
       uses: actions/checkout@v2
