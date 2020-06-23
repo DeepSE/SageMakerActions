@@ -22,8 +22,8 @@ class Comment:
             print("No pr number")
             return
 
+        print("PR_NUMBER", pr_number)
         pr_number = int(pr_number)
-
         self.pr = self.repo.get_pull(pr_number)
 
     def add_comment(self, message):
