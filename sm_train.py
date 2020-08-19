@@ -7,8 +7,8 @@ from report import ResultReport
 sagemaker_session = sagemaker.Session(boto3.session.Session())
 
 # Put the right role and input data
-role = "arn:aws:iam::294038372338:role/hunkimSagemaker"
-inputs = "s3://sagemaker-us-west-2-294038372338/sagemaker/hunkim-pytorch-mnist"
+role = "arn:aws:iam::887692747240:role/service-role/AmazonSageMaker-ExecutionRole-20200819T155616"
+inputs = "s3://sagemaker-us-west-2-887692747240/sagemaker/mnist"
 
 # Make sure the metric_definition and its regex
 # Train_epoch=1.0000;  Train_loss=0.8504;
@@ -39,15 +39,15 @@ estimator.fit({'training': inputs})
 # DONOT EDIT AFTER THIS LINE
 ########################################################################
 training_job_name = estimator.latest_training_job.name
-    
+
 # Get metric values
-metric_names = [ metric['Name'] for metric in estimator.metric_definitions ] 
+metric_names = [ metric['Name'] for metric in estimator.metric_definitions ]
 metrics_dataframe = TrainingJobAnalytics(training_job_name=training_job_name, metric_names=metric_names).dataframe()
 
 # Report results
 rr = ResultReport()
 rr.report(estimator.model_data, metrics_dataframe)
-    
+
 # Update leaderboard. Make sure the key name is right
 # Use any name if you don't want to use the leaderboard
 score_metric = 'test:accuracy'

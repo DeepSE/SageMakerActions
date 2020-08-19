@@ -4,9 +4,9 @@ import sagemaker
 sagemaker_session = sagemaker.Session()
 
 bucket = sagemaker_session.default_bucket()
-prefix = 'sagemaker/hunkim-pytorch-mnist'
+prefix = 'sagemaker/mnist'
 
-role = "arn:aws:iam::294038372338:role/hunkimSagemaker"
+role = "arn:aws:iam::887692747240:role/service-role/AmazonSageMaker-ExecutionRole-20200819T155616"
 
 datasets.MNIST('data', download=True, transform=transforms.Compose([
     transforms.ToTensor(),
