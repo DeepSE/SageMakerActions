@@ -24,9 +24,10 @@ metric_definitions=[
 estimator = PyTorch(entry_point='mnist.py',
                     source_dir='code',
                     role=role,
-                    framework_version='1.4.0',
-                    train_instance_count=2,
-                    train_instance_type='ml.c4.xlarge',
+                    framework_version='1.6.0',
+                    py_version='py3',
+                    instance_count=2,
+                    instance_type='ml.c4.xlarge',
                     metric_definitions=metric_definitions,
                     hyperparameters={
                         'epochs': 1,
@@ -39,15 +40,15 @@ estimator.fit({'training': inputs})
 # DONOT EDIT AFTER THIS LINE
 ########################################################################
 training_job_name = estimator.latest_training_job.name
-    
+
 # Get metric values
-metric_names = [ metric['Name'] for metric in estimator.metric_definitions ] 
+metric_names = [ metric['Name'] for metric in estimator.metric_definitions ]
 metrics_dataframe = TrainingJobAnalytics(training_job_name=training_job_name, metric_names=metric_names).dataframe()
 
 # Report results
 rr = ResultReport()
 rr.report(estimator.model_data, metrics_dataframe)
-    
+
 # Update leaderboard. Make sure the key name is right
 # Use any name if you don't want to use the leaderboard
 score_metric = 'test:accuracy'
