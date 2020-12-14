@@ -20,7 +20,7 @@ metric_definitions=[
                         {'Name': 'train:epoch', 'Regex': 'Train_epoch=(.*?);'}
                     ]
 
-
+ 
 estimator = PyTorch(entry_point='mnist.py',
                     source_dir='code',
                     role=role,
