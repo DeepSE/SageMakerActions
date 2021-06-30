@@ -3,7 +3,7 @@ on: [issue_comment]
 
 jobs:
   sm_delete:
-    if: github.event.issue.pull_request != null &&  contains(github.event.comment.body, '/delete') && (github.actor == 'hunkim' || github.actor == 'ygg')
+    if: github.event.issue.pull_request != null &&  contains(github.event.comment.body, '/delete')
     runs-on: ubuntu-latest
     steps:
     - name: PR checkout
